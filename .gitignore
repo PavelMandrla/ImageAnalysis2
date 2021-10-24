@@ -1,0 +1,5 @@
+face_detection/venv/
+parking/test_images/
+parking/train_images/
+.idea/
+*/LBP/.idea
