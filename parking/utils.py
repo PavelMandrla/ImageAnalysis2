@@ -1,4 +1,6 @@
 import numpy as np
+import cv2
+import glob
 
 
 def order_points(pts):
@@ -54,3 +56,53 @@ def four_point_transform(image, pts):
     warped = cv2.warpPerspective(image, M, (maxWidth, maxHeight))
     # return the warped image
     return warped
+
+
+def load_parking_map():
+    pkm_coordinates = []
+    with open('parking_map_python.txt', 'r') as pkm_file:
+        pkm_lines = pkm_file.readlines()
+
+        for line in pkm_lines:
+            st_line = line.strip()
+            sp_line = list(st_line.split(" "))
+            pkm_coordinates.append(sp_line)
+    return pkm_coordinates
+
+
+def load_truth():
+    with open("groundtruth.txt") as truth_file:
+        truth = [int(x) for x in truth_file.read().splitlines()]
+    return truth
+
+
+def load_train_images(w, h):
+    train_labels_list = []
+    train_images_list = []
+    train_images_full = [img for img in glob.glob("train_images/full/*.png")]
+    train_images_free = [img for img in glob.glob("train_images/free/*.png")]
+    for i in range(len(train_images_full)):
+        one_park_image = cv2.imread(train_images_full[i], 0)
+        res_image = cv2.resize(one_park_image, (w, h))
+        train_images_list.append(res_image)
+        train_labels_list.append(1)
+
+    for i in range(len(train_images_free)):
+        one_park_image = cv2.imread(train_images_free[i], 0)
+        res_image = cv2.resize(one_park_image, (w, h))
+        train_images_list.append(res_image)
+        train_labels_list.append(0)
+
+    return train_images_list, train_labels_list
+
+
+def draw_spot(img, pts, cls):
+    spot_color = (0, 255, 0) if cls == 1 else (255, 0, 0)
+    int_points = [(int(a), int(b)) for a, b in pts]
+
+    cv2.line(img, int_points[0], int_points[1], spot_color, 5)
+    cv2.line(img, int_points[1], int_points[2], spot_color, 5)
+    cv2.line(img, int_points[2], int_points[3], spot_color, 5)
+    cv2.line(img, int_points[3], int_points[0], spot_color, 5)
+    cv2.line(img, int_points[0], int_points[2], spot_color, 5)
+    cv2.line(img, int_points[1], int_points[3], spot_color, 5)
