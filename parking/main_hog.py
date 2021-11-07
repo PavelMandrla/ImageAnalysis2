@@ -60,7 +60,7 @@ for img in test_images:
 
     cv2.imshow('one_park_image', one_park_image_show)
 
-    key = cv2.waitKey(0)
+    key = cv2.waitKey(20)
     if key == 27:  # exit on ESC
         break
 
