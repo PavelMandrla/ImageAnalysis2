@@ -7,6 +7,6 @@
 |tresholding (400)|0.97|0.95|0.93|
 |tresholding (450)|0.97|0.95|0.93|
 |HOG||||
-|LBP||||
+|LBP|0.96|0.93|0.91|
 |LeNet||||
 |AlexNet||||

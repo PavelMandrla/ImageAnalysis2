@@ -38,10 +38,12 @@ for img in test_images:
         spot_class = 1 if predict_label == 1 else 0
         draw_spot(one_park_image_show, pts, spot_class)
 
+        cv2.imshow('one_park_image', one_park_image_show)
+
         results.eval(truth[img_i], spot_class)
         img_i += 1
 
-    key = cv2.waitKey(0)
+    key = cv2.waitKey(30)
     if key == 27:  # exit on ESC
         break
 
