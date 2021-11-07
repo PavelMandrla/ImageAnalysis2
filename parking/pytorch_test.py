@@ -13,18 +13,18 @@ from stats import Results
 
 cv2.namedWindow("detection", 0)
 
-IMG_SIZE = 32
-#IMG_SIZE = 224
+#IMG_SIZE = 32
+IMG_SIZE = 224
 
 transform = transforms.Compose([
     transforms.ToTensor(),
-    #transforms.Resize(224)
-    transforms.Resize(32)
+    transforms.Resize(224)
+    #transforms.Resize(32)
 ])
 
 
-net = torch.load("my_LeNet.pth")
-#net = torch.load("my_AlexNet.pth")
+#net = torch.load("my_LeNet.pth")
+net = torch.load("my_AlexNet.pth")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 pkm_coordinates = load_parking_map()
