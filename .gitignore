@@ -1,5 +1,6 @@
 face_detection/venv/
 parking/test_images/
 parking/train_images/
+*/__pycache__
 .idea/
 */LBP/.idea

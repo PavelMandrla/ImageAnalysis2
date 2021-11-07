@@ -28,7 +28,7 @@ print("train all: %d" % len(train_images))
 
 svm.train(np.array(train_images), cv2.ml.ROW_SAMPLE, np.array(train_labels))
 print("HOG training done")
-svm.save("my_det.xml")
+svm.save("my_HOG_det.xml")
 
 test_images = [img for img in glob.glob("test_images/*.jpg")]
 test_images.sort()

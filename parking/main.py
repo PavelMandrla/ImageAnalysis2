@@ -7,20 +7,13 @@ import math
 import struct
 from datetime import datetime
 import glob
-from data_loader import four_point_transform
+from data_loader import four_point_transform, load_parking_map
 
 
 def main(argv):
     cv2.namedWindow("detection", 0)
 
-    pkm_file = open('parking_map_python.txt', 'r')
-    pkm_lines = pkm_file.readlines()
-    pkm_coordinates = []
-
-    for line in pkm_lines:
-        st_line = line.strip()
-        sp_line = list(st_line.split(" "))
-        pkm_coordinates.append(sp_line)
+    pkm_coordinates = load_parking_map()
 
     test_images = [img for img in glob.glob("test_images/*.jpg")]
     test_images.sort()
