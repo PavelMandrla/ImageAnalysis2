@@ -1,10 +1,6 @@
-import sys
 import cv2
 import numpy as np
-import math
-import struct
 import glob
-from datetime import datetime
 from utils import four_point_transform, load_parking_map, load_truth, draw_spot
 from stats import Results
 
