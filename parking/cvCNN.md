@@ -37,4 +37,29 @@ v LeNet se za sebou konvoluce a poolingy vrství
   - data augmentation
     - úprava vstupních obrázků
       - např u aut bychom přidali šum, aby to nějak simulovalo situaci v noci
-      
+  - přišlo se na to, že se ty sítě nedají vrstvit donekonečna
+    - přestane se to zlepšovat, ale dokonce se to zhoršuje
+### ZFNet
+  - nepoužijeme na detekci/rozpoznávání
+  - je na ní pěkné to, že představili síť, která obsahovala dekonvoluci
+    - vizualizace toho, jak ty příznaky/obraz vypadají v různých těch vrstvách
+    - přinesli představu, jak to v těch sítích funguje
+      - v prvních vrstvách jsou příznaky velmi low level (rohy, hrany, ...)
+      - později se objevují kontury objektů
+        - dále se to zpřesnňuje a zpřesňuje
+  - (transfer learning)
+    - přišlo se na to, že hodně objektů má ty první vrstvy hodně podobné
+      - rohy, hrany
+    - další vrstvy jsou již class specific
+    - když máme nějakou síť, tak můžeme vzít nějakou již předtrénovanou a dotrénujeme si poslední vrstvy, které se specializují na daný případ
+      - zkrátí se trénovací doba
+### VGGNet
+  - na parkovišťích prý dosáhl úspěšnosti 99% bez úpravy datasetu
+  - ten soubor, co to v Pytorchi natrénuje má prý půl giga
+  - velmi hluboká "obluda"
+  - použití VGG bloku
+    - bloková reprezentace do konvolučních sítí
+    - síť se dá skládat z bloků
+  - navrhli jich několik - číslo za názvem sítě
+    - počet vrstev - v nich jsou velké počty konvolučních masek
+  - implementováno skoro všude
