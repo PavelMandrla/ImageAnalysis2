@@ -63,3 +63,5 @@ v LeNet se za sebou konvoluce a poolingy vrství
   - navrhli jich několik - číslo za názvem sítě
     - počet vrstev - v nich jsou velké počty konvolučních masek
   - implementováno skoro všude
+  - použít "_batch noramlization_" - další vrstva, kterou tam můžeme vložit
+    - pomůže nám to rychleji konvergovat k nějakému výsledku

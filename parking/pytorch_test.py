@@ -23,7 +23,7 @@ transform = transforms.Compose([
 
 
 #net = torch.load("my_LeNet.pth")
-net = torch.load("my_AlexNet.pth")
+net = torch.load("my_VGGNet.pth")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 pkm_coordinates = load_parking_map()
