@@ -44,11 +44,14 @@ net = nn.Sequential(
     nn.AvgPool2d(kernel_size=2, stride=2),
     nn.Flatten(),
     nn.Linear(16 * 5 * 5, 120), # je třeba ho změnit, na něco jiného
-    #nn.LazyLinear(120), # je třeba ho změnit, na něco jiného
+    #nn.LazyLinear(120),
     nn.ReLU(),
     nn.Linear(120, 84),
+    #nn.LazyLinear(84),
     nn.ReLU(),
-    nn.Linear(84, 2))
+    nn.Linear(84, 2)
+    #nn.LazyLinear(2)
+)
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 net.to(device)

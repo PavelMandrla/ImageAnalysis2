@@ -13,13 +13,12 @@ from stats import Results
 
 cv2.namedWindow("detection", 0)
 
-#IMG_SIZE = 32
-IMG_SIZE = 224
+#IMG_SIZE = 32   # LeNet
+IMG_SIZE = 224  # AlexNet
 
 transform = transforms.Compose([
     transforms.ToTensor(),
-    transforms.Resize(224)
-    #transforms.Resize(32)
+    transforms.Resize(IMG_SIZE)
 ])
 
 
