@@ -33,7 +33,7 @@ def vgg(conv_arch):
         # The fully-connected part
         nn.Linear(out_channels * 7 * 7, 4096), nn.ReLU(), nn.Dropout(0.5),
         nn.Linear(4096, 4096), nn.ReLU(), nn.Dropout(0.5),
-        nn.Linear(4096, 10))
+        nn.Linear(4096, 2))
 
 
 transform = transforms.Compose([

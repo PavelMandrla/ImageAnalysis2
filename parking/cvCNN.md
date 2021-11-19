@@ -65,3 +65,28 @@ v LeNet se za sebou konvoluce a poolingy vrství
   - implementováno skoro všude
   - použít "_batch noramlization_" - další vrstva, kterou tam můžeme vložit
     - pomůže nám to rychleji konvergovat k nějakému výsledku
+###GoogLeNet
+  - je v ní Inception blok
+    - "we have to go deeper"
+      - hlubší než VGG
+  - nešli pouze do hloubky
+    - nevíme, jakou velikost kernelu použít? -> použijeme jich více
+    - 3x3? 5x5? obě
+      - udělají se dvě větve
+        - ty se potom spojí a to jde na další vrstvu
+      - tím jdeme i do šířky
+        - šli více do šířky, než do hloubky
+  - 1x1 konvoluce
+    -  pro redukci dimenze prostoru
+      - aby se vůbec dopočítali výsledku
+    - vezmeme vstupní obraz a vynásobíme to skalárem
+      - ve 2d prostoru to nemá smysl
+    - je to 1x1 x počet kanálů
+      - všechny ty kanály to smrskne do jednoho
+        - 64x64x192 to zmenší do 64x64x1
+    - může mi to výrazně zmenšit potřebný počet operací
+    - rozšířit architekturu o noramlizaci dávky
+      - pak by to trénování mohlo fungovat lépe
+    - obhák pro lepší výsledky
+      - použijeme models.googlenet(pretrained=True)
+      - 
