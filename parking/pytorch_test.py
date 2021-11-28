@@ -59,7 +59,7 @@ transform = transforms.Compose([
 
 
 #net = torch.load("my_LeNet.pth")
-net = torch.load("my_GoogLeNet.pth")
+net = torch.load("my_DenseNet_pretrained.pth")
 net.eval()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -89,7 +89,7 @@ for img in test_images:
         output_pytorch = net(image_pytorch)
 
         _, predicted = torch.max(output_pytorch, 1)
-        print(predicted)
+        #print(predicted)
 
         spot_class = predicted[0]
         draw_spot(one_park_image_show, pts, spot_class)

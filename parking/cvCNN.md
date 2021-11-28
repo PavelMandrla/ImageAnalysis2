@@ -39,6 +39,7 @@ v LeNet se za sebou konvoluce a poolingy vrství
       - např u aut bychom přidali šum, aby to nějak simulovalo situaci v noci
   - přišlo se na to, že se ty sítě nedají vrstvit donekonečna
     - přestane se to zlepšovat, ale dokonce se to zhoršuje
+
 ### ZFNet
   - nepoužijeme na detekci/rozpoznávání
   - je na ní pěkné to, že představili síť, která obsahovala dekonvoluci
@@ -53,6 +54,7 @@ v LeNet se za sebou konvoluce a poolingy vrství
     - další vrstvy jsou již class specific
     - když máme nějakou síť, tak můžeme vzít nějakou již předtrénovanou a dotrénujeme si poslední vrstvy, které se specializují na daný případ
       - zkrátí se trénovací doba
+
 ### VGGNet
   - na parkovišťích prý dosáhl úspěšnosti 99% bez úpravy datasetu
   - ten soubor, co to v Pytorchi natrénuje má prý půl giga
@@ -65,7 +67,8 @@ v LeNet se za sebou konvoluce a poolingy vrství
   - implementováno skoro všude
   - použít "_batch noramlization_" - další vrstva, kterou tam můžeme vložit
     - pomůže nám to rychleji konvergovat k nějakému výsledku
-###GoogLeNet
+
+### GoogLeNet
   - je v ní Inception blok
     - "we have to go deeper"
       - hlubší než VGG
@@ -89,4 +92,41 @@ v LeNet se za sebou konvoluce a poolingy vrství
       - pak by to trénování mohlo fungovat lépe
     - obhák pro lepší výsledky
       - použijeme models.googlenet(pretrained=True)
-      - 
+
+### ResNet
+  - opět dopadla dobře v té soutěži
+  - dnes jedna z nejpoužívanějších sítí, chceme-li něco rozpoznat
+  - zkoumali, zda se dá donekonečna jít hlouběji
+    - jestli čím více vrstev, tím lepší výsledek
+    - udělali jednoduché sítě, na kterých to otestovali s datasetem CIFAR-10
+    - přišli na to, že to nejde
+      - 20ti vrstvá síť překonala 56ti vrstvou
+    - čím to je?
+      - ___Vanishing gradient issue___
+        - problém mizejícího gradientu
+        - čím hlouběji propagujeme informaci do sítě, tak následně musíme při backpropagation propagovat chybu stejně daleko
+          - čím je síť hlubší, tím méně ovlivňuje první vrstvy
+    - __shortcut connections__
+      - obejdu některé konvoluční vrstvy
+      - modifikuji ji, ale posílám ji i modifikovanou
+      - na další vrstvě se sečtou modifikované hodnoty s těmi nemodifikovanými
+      - díky tomuto se dají trénovat mnohem hlubší sítě s lepším výsledkem
+        - informace nám nemizí
+  - přemýšlelo se, jak to zrychlit
+    - opět se použily 1x1 konvoluce na zmenšení dimenze
+  - testy, zda používat Batch normalization před/za součtem
+    - to samé s ReLU
+  - varianty
+    - dá se tím modifikovat řada již existujících architektur
+    - _Inception ResNet_
+    - _ResNeXt_ - jde více do šířky
+    - v erroru už to ale jsou spíše otázky desetin
+    - ___Dense Net___
+      - na rozdíl od ResNetu jde informace za další blok, za další dva bloky, za další tři bloky, ...
+      - informa se k tomu nepřičte, ale konkatanuje se na konec
+- __transfer learning__ v pytorchi
+  - aniž bychom museli síť implementovat
+  - ty sítě se dají různě modifikovat i když použijeme variantu od nich
+    - můžeme změnit parametry ve vrstvách
+    - můžeme změnit vrstvu
+    - optim.SGD(resnet18.fc.parameters(), ...) => změň parametry pouze v té poslední vrstvě

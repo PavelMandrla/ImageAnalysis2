@@ -87,10 +87,6 @@ print(image_datasets)
 classes = ('free', 'full')
 
 
-def imshow(img):
-    npimg = img.numpy()
-    plt.imshow(np.transpose(npimg, (1, 2, 0)))
-    plt.show()
 
 
 dataiter = iter(data_loader)

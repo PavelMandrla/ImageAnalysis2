@@ -2,6 +2,15 @@ import numpy as np
 import cv2
 import glob
 
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torchvision
+import torchvision.transforms as transforms
+import torchvision.datasets as datasets
+import matplotlib.pyplot as plt
+import numpy as np
+
 
 def order_points(pts):
     # initialzie a list of coordinates that will be ordered
@@ -106,3 +115,52 @@ def draw_spot(img, pts, cls):
     cv2.line(img, int_points[3], int_points[0], spot_color, 5)
     cv2.line(img, int_points[0], int_points[2], spot_color, 5)
     cv2.line(img, int_points[1], int_points[3], spot_color, 5)
+
+
+def imshow(img):
+    npimg = img.numpy()
+    plt.imshow(np.transpose(npimg, (1, 2, 0)))
+    plt.show()
+
+
+
+
+def train_net(net, transform, epochs=5, batch_size=8):
+    data_dir = 'train_images'
+    image_datasets = datasets.ImageFolder(data_dir, transform=transform)
+    data_loader = torch.utils.data.DataLoader(image_datasets, batch_size=batch_size, shuffle=True, num_workers=4)
+
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    net.to(device)
+
+    print(net)
+
+    criterion = nn.CrossEntropyLoss()
+    optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
+
+    for epoch in range(epochs):  # loop over the dataset multiple times
+        print('epoch %d' % epoch)
+        running_loss = 0.0
+        for i, data in enumerate(data_loader, 0):
+            # get the inputs; data is a list of [inputs, labels]
+            inputs, labels = data[0].to(device), data[1].to(device)
+
+            # zero the parameter gradients
+            optimizer.zero_grad()
+
+            # forward + backward + optimize
+            outputs = net(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
+
+            # print statistics
+            running_loss += loss.item()
+            if i % 20 == 19:  # print every 2000 mini-batches
+                print('[%d, %5d] loss: %.3f' %
+                      (epoch + 1, i + 1, running_loss / 20))
+
+                running_loss = 0.0
+    print('Finished Training')
+    PATH = './my_LeNet.pth'
+    torch.save(net, PATH)

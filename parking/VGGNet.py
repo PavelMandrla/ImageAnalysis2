@@ -7,6 +7,10 @@ import torchvision.datasets as datasets
 import matplotlib.pyplot as plt
 import numpy as np
 
+from itertools import chain
+from VGGBlock import VGG
+
+'''
 def vgg_block(num_convs, in_channels, out_channels):
     layers = []
     for _ in range(num_convs):
@@ -34,6 +38,24 @@ def vgg(conv_arch):
         nn.Linear(out_channels * 7 * 7, 4096), nn.ReLU(), nn.Dropout(0.5),
         nn.Linear(4096, 4096), nn.ReLU(), nn.Dropout(0.5),
         nn.Linear(4096, 2))
+'''
+
+
+def vgg(conv_arch):
+    tmp = VGG('11')
+    #tmp = list(chain([x.blocks for x in tmp]))
+    #tmp = list(chain(list(chain([x.layers for x in tmp.blocks]))))
+    tmp = sum([x.layers for x in tmp.blocks], [])
+    print(tmp)
+    out_channels = 512
+
+    return nn.Sequential(
+        *tmp,
+        nn.Flatten(),
+        # The fully-connected part
+        nn.Linear(out_channels * 7 * 7, 4096), nn.ReLU(), nn.Dropout(0.5),
+        nn.Linear(4096, 4096), nn.ReLU(), nn.Dropout(0.5),
+        nn.Linear(4096, 2))
 
 
 transform = transforms.Compose([
@@ -45,7 +67,7 @@ batch_size = 8
 
 data_dir = 'train_images'
 image_datasets = datasets.ImageFolder(data_dir, transform=transform)
-data_loader = torch.utils.data.DataLoader(image_datasets, batch_size=batch_size, shuffle = True, num_workers=4)
+data_loader = torch.utils.data.DataLoader(image_datasets, batch_size=batch_size, shuffle = True, num_workers=2)
 
 print(image_datasets)
 classes = ('free', 'full')
@@ -71,6 +93,7 @@ net.to(device)
 
 print(net)
 
+imshow(torchvision.utils.make_grid(images))
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
@@ -79,6 +102,7 @@ for epoch in range(10):  # loop over the dataset multiple times
     running_loss = 0.0
     for i, data in enumerate(data_loader, 0):
         # get the inputs; data is a list of [inputs, labels]
+        #print(len(data[0]))
         inputs, labels = data[0].to(device), data[1].to(device)
 
         # zero the parameter gradients
