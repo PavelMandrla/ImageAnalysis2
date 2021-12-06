@@ -8,9 +8,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from itertools import chain
-from VGGBlock import VGG
+#from VGGBlock import VGG
 
-'''
+
 def vgg_block(num_convs, in_channels, out_channels):
     layers = []
     for _ in range(num_convs):
@@ -38,24 +38,7 @@ def vgg(conv_arch):
         nn.Linear(out_channels * 7 * 7, 4096), nn.ReLU(), nn.Dropout(0.5),
         nn.Linear(4096, 4096), nn.ReLU(), nn.Dropout(0.5),
         nn.Linear(4096, 2))
-'''
 
-
-def vgg(conv_arch):
-    tmp = VGG('11')
-    #tmp = list(chain([x.blocks for x in tmp]))
-    #tmp = list(chain(list(chain([x.layers for x in tmp.blocks]))))
-    tmp = sum([x.layers for x in tmp.blocks], [])
-    print(tmp)
-    out_channels = 512
-
-    return nn.Sequential(
-        *tmp,
-        nn.Flatten(),
-        # The fully-connected part
-        nn.Linear(out_channels * 7 * 7, 4096), nn.ReLU(), nn.Dropout(0.5),
-        nn.Linear(4096, 4096), nn.ReLU(), nn.Dropout(0.5),
-        nn.Linear(4096, 2))
 
 
 transform = transforms.Compose([

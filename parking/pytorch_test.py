@@ -48,8 +48,8 @@ class Inception(nn.Module):
 
 
 #IMG_SIZE = 32   # LeNet
-#IMG_SIZE = 224  # AlexNet
-IMG_SIZE = 96 # GoogLeNet
+IMG_SIZE = 224  # AlexNet
+#IMG_SIZE = 96 # GoogLeNet
 
 transform = transforms.Compose([
     transforms.ToTensor(),
@@ -58,8 +58,7 @@ transform = transforms.Compose([
 ])
 
 
-#net = torch.load("my_LeNet.pth")
-net = torch.load("my_DenseNet_pretrained.pth")
+net = torch.load("my_AlexNet.pth")
 net.eval()
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -98,10 +97,11 @@ for img in test_images:
         img_i += 1
 
     cv2.imshow('one_park_image', one_park_image_show)
-    key = cv2.waitKey(20)
+    key = cv2.waitKey(0)
     if key == 27:  # exit on ESC
         break
 
 print("accuracy: %f" % results.get_accuracy())
 print("F1 score: %f" % results.get_f1())
 print("MCC: %f" % results.get_mcc())
+print("fp: %f, fn: %f" % (results.fp, results.fn))

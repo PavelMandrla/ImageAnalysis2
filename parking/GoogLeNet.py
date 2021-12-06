@@ -1,14 +1,12 @@
 import torch
 import torch.nn as nn
-import torch.nn
-from torch.nn import functional as F
 import torch.optim as optim
 import torchvision
+from torchvision import transforms
 import torchvision.models
-import torchvision.transforms as transforms
-import torchvision.datasets as datasets
-import matplotlib.pyplot as plt
-import numpy as np
+from utils import train_net
+from torch.nn import functional as F
+
 
 
 class Inception(nn.Module):
@@ -21,11 +19,13 @@ class Inception(nn.Module):
         # Path 2 is a 1 x 1 convolutional layer followed by a 3 x 3
         # convolutional layer
         self.p2_1 = nn.Conv2d(in_channels, c2[0], kernel_size=1)
+        self.p2_1_norm = nn.BatchNorm2d(c2[0])
         self.p2_2 = nn.Conv2d(c2[0], c2[1], kernel_size=3, padding=1)
         self.p2_2_norm = nn.BatchNorm2d(c2[1])
         # Path 3 is a 1 x 1 convolutional layer followed by a 5 x 5
         # convolutional layer
         self.p3_1 = nn.Conv2d(in_channels, c3[0], kernel_size=1)
+        self.p3_1_norm = nn.BatchNorm2d(c3[0])
         self.p3_2 = nn.Conv2d(c3[0], c3[1], kernel_size=5, padding=2)
         self.p3_2_norm = nn.BatchNorm2d(c3[1])
         # Path 4 is a 3 x 3 maximum pooling layer followed by a 1 x 1
@@ -45,11 +45,14 @@ class Inception(nn.Module):
 
 
 def GoogLeNet():
-    b1 = nn.Sequential(nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3),
-                       nn.ReLU(), nn.MaxPool2d(kernel_size=3, stride=2, padding=1))
+    b1 = nn.Sequential(nn.Conv2d(3, 64, kernel_size=7, stride=2, padding=3), nn.ReLU(),
+                       nn.BatchNorm2d(64),
+                       nn.MaxPool2d(kernel_size=3, stride=2, padding=1))
 
     b2 = nn.Sequential(nn.Conv2d(64, 64, kernel_size=1), nn.ReLU(),
+                       nn.BatchNorm2d(64),
                        nn.Conv2d(64, 192, kernel_size=3, padding=1), nn.ReLU(),
+                       nn.BatchNorm2d(192),
                        nn.MaxPool2d(kernel_size=3, stride=2, padding=1))
 
     b3 = nn.Sequential(Inception(192, 64, (96, 128), (16, 32), 32),
@@ -77,59 +80,6 @@ transform = transforms.Compose([
     #transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
 ])
 
-batch_size = 8
-
-data_dir = 'train_images'
-image_datasets = datasets.ImageFolder(data_dir, transform=transform)
-data_loader = torch.utils.data.DataLoader(image_datasets, batch_size=batch_size, shuffle = True, num_workers=4)
-
-print(image_datasets)
-classes = ('free', 'full')
-
-
-
-
-dataiter = iter(data_loader)
-images, labels = dataiter.next()
-print(' '.join('%5s' % classes[labels[j]] for j in range(batch_size)))
-
-imshow(torchvision.utils.make_grid(images))
-
-
 net = GoogLeNet()
 #net = torchvision.models.googlenet(pretrained=True)
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-net.to(device)
-
-print(net)
-
-criterion = nn.CrossEntropyLoss()
-optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
-
-for epoch in range(5):  # loop over the dataset multiple times
-    print('epoch %d' % epoch)
-    running_loss = 0.0
-    for i, data in enumerate(data_loader, 0):
-        # get the inputs; data is a list of [inputs, labels]
-        inputs, labels = data[0].to(device), data[1].to(device)
-
-        # zero the parameter gradients
-        optimizer.zero_grad()
-
-        # forward + backward + optimize
-        outputs = net(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
-
-        # print statistics
-        running_loss += loss.item()
-        if i % 20 == 19:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 20))
-            running_loss = 0.0
-
-print('Finished Training')
-PATH = './my_GoogLeNet.pth'
-torch.save(net, PATH)
-# je treba udelat konverzi, ktera bude fungovat peyi pytorchem
+train_net(net, transform, 'GoogLeNet', epochs=5)

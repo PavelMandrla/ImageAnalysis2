@@ -130,3 +130,51 @@ v LeNet se za sebou konvoluce a poolingy vrství
     - můžeme změnit parametry ve vrstvách
     - můžeme změnit vrstvu
     - optim.SGD(resnet18.fc.parameters(), ...) => změň parametry pouze v té poslední vrstvě
+
+### použití sítí pro detekování
+- chceme v obraze ty objekty najít ne je pouze klasifikovat
+- nemáme geometrii parkoviště
+  - mohli bychom natrénovat síť tak jak teď, pak se podívat na nějaké místo v obraze, vyříznout z něj obdélník a síť by nám řekla, zda je to prázdné místo, nebo plné
+  - můžou v tom být problémy, protože v tom obraze jsou části, které v trénovacím datasetu vůbec nejsou
+  - sliding window
+  - pro různě velké objekty - musíme měnit velikost detekční okno, nebo měnit velikost obrazu
+    - vede to k novému scanu
+    - pomalé
+- ___region based CNN___
+  - _R-CNN_
+  - vezmeme vstupní obraz
+    - pomocí Selective search for object recognition algoritmu jsou v obrzaze nalezeny výřezy (ROI, proposals)
+      - extrahují jich asi 2000
+      - nasegmentuje mi to obraz
+        - mnoho segmentů se společnými vlastnostmi, které můžeme dát do bounding boxů
+  - bounding box se dá na vstup té sítě - ta nám to klasifikuje
+  - problém
+    - je nutné ten obrázek resiznout - musíme do sítě dostat fixní velikost
+    - ty segmenty ale nemají takovou velikosti
+      - dochází k deformaci toho obrazu, není to OK
+  - Selective search for object recognition je i v opencv jako funkce
+  - _Fast R-CNN_
+    - ta původní metoda není zase tak rychlá
+    - přidali ROI pooling layer a konvoluční feature mapu
+      - předtím nebylo sdílení počítání příznaků mezi objekty
+      - obraz proženeme sítí VGG - dostaneme menší obraz
+        - v nějaké fázi VGG to usekli - dej mi obraz, co ti vyjde po páté vrstvě
+          - vezme se feature mapa a na to se namapuje Selective search, který byl použit na původní obraz
+      - abych ty příznaky nemuseli resizovat - ROI pooling
+        - vezmou se hodnoty feature mapy, a oblast toho objektu
+        - region se rozdělí do čtyř (n) částí, a z každé části se vezme maxpoolingem maximum
+          - pokaždé získáme 4 hodnoty
+            - 4 hodnoty * počet masek
+        to se vezme a hodí se to do té fully connected vrstvy
+  - _Faster R-CNN_
+    - odstranění té segmentační metody
+    - Region proposal network
+      - z té páté vrstvy VGG hodíme feature mapy do té Region proposal network
+        - ta hledá ROI v té feature mapě
+    - pořád to ještě není ono
+      - dva moduly, které spolu nějak kooperují
+  - _Mask R-CNN_
+    - extra síť, která dělá segmentaci
+  - _YOLO_
+    - you look only once
+    - pouze jeden modul, snaží se ty objekty hledat najednou

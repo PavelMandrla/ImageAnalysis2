@@ -7,6 +7,7 @@ from datetime import datetime
 import glob
 from utils import four_point_transform, load_parking_map, load_truth, draw_spot, load_train_images
 from stats import Results
+import time
 
 results = Results()
 img_i = 0
@@ -26,8 +27,11 @@ train_images = [hog.compute(res_image) for res_image in train_images]
 
 print("train all: %d" % len(train_images))
 
+start = time.time()
 svm.train(np.array(train_images), cv2.ml.ROW_SAMPLE, np.array(train_labels))
+end = time.time()
 print("HOG training done")
+print(end - start)
 svm.save("my_HOG_det.xml")
 
 test_images = [img for img in glob.glob("test_images/*.jpg")]

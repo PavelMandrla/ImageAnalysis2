@@ -30,4 +30,4 @@ net = nn.Sequential(
     #nn.LazyLinear(2)
 )
 
-train_net(net, transform, epochs=5)
+train_net(net, transform, 'LeNet', epochs=5)

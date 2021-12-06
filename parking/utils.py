@@ -10,6 +10,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 import matplotlib.pyplot as plt
 import numpy as np
+import time
 
 
 def order_points(pts):
@@ -107,6 +108,7 @@ def load_train_images(w, h):
 
 def draw_spot(img, pts, cls):
     spot_color = (0, 255, 0) if cls == 1 else (255, 0, 0)
+
     int_points = [(int(a), int(b)) for a, b in pts]
 
     cv2.line(img, int_points[0], int_points[1], spot_color, 5)
@@ -123,9 +125,7 @@ def imshow(img):
     plt.show()
 
 
-
-
-def train_net(net, transform, epochs=5, batch_size=8):
+def train_net(net, transform, net_name, epochs=5, batch_size=8):
     data_dir = 'train_images'
     image_datasets = datasets.ImageFolder(data_dir, transform=transform)
     data_loader = torch.utils.data.DataLoader(image_datasets, batch_size=batch_size, shuffle=True, num_workers=4)
@@ -138,6 +138,7 @@ def train_net(net, transform, epochs=5, batch_size=8):
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
+    start = time.time()
     for epoch in range(epochs):  # loop over the dataset multiple times
         print('epoch %d' % epoch)
         running_loss = 0.0
@@ -161,6 +162,8 @@ def train_net(net, transform, epochs=5, batch_size=8):
                       (epoch + 1, i + 1, running_loss / 20))
 
                 running_loss = 0.0
+    end = time.time()
     print('Finished Training')
-    PATH = './my_LeNet.pth'
+    print(end - start)
+    PATH = './my_%s.pth' % net_name # './my_LeNet.pth'
     torch.save(net, PATH)

@@ -29,7 +29,7 @@ for img in test_images:
         gray_image = cv2.cvtColor(blur_image, cv2.COLOR_BGR2GRAY)
         edge_image = cv2.Canny(gray_image, 40, 120)
 
-        spot_class = 1 if cv2.countNonZero(edge_image) > 450 else 0
+        spot_class = 1 if cv2.countNonZero(edge_image) > 451 else 0
         draw_spot(one_park_image_show, pts, spot_class)
 
         cv2.imshow('one_park_image', one_park_image_show)
